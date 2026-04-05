@@ -10,11 +10,10 @@ class FindElementId():
 
         chrome_options.add_argument("--headless")
 
-        driver = (webdriver.Remote
-        (
+        driver = webdriver.Remote(
             command_executor='http://selenium-standalone:4444/wd/hub',
             options=chrome_options
-        ))
+        )
 
         time.sleep(5)
 

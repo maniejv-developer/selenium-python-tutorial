@@ -1,11 +1,20 @@
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 
 
 class FindElementId():
     def locate_by_id(self):
-        driver = webdriver.Chrome()
+        chrome_options = Options()
+
+        chrome_options.add_argument("--headless")
+
+        driver = (webdriver.Remote
+        (
+            command_executor='http://selenium-standalone:4444/wd/hub',
+            options=chrome_options
+        ))
 
         time.sleep(5)
 

@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts
+    privileged: true
+    user: root
+    container_name: jenkins
+    restart: always
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - TZ=America/New_York
+      - JAVA_OPTS=-Duser.timezone=America/New_York
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    networks:
+      - automation-network
+
+  selenium-chrome:
+    image: selenium/standalone-chrome:latest
+    container_name: selenium-chrome
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    shm_size: 2gb
+    restart: always
+    networks:
+      - automation-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - prometheus_data:/prometheus
+      - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - automation-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - automation-network
+
+networks:
+  automation-network:
+    external: true
+
+volumes:
+  jenkins_home:
+  prometheus_data:
+  grafana_data:

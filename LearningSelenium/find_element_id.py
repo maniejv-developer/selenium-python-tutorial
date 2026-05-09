@@ -29,4 +29,3 @@ class FindElementId():
 
 find_element_id = FindElementId()
 find_element_id.locate_by_id()
-print("Testing Poll SCM")

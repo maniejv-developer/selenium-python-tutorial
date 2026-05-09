@@ -29,3 +29,9 @@
 
     - name: Restart Selenium Chrome Container
       shell: docker restart selenium-chrome
+
+    - name: Change backup file ownership to maniejv
+      file:
+        path: "/home/maniejv/backups/lab_backup_{{ ansible_date_time.date }}.tar.gz"
+        owner: maniejv
+        group: maniejv

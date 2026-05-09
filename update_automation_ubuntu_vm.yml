@@ -1,0 +1,16 @@
+---
+- name: Update VM and Refresh Selenium
+  hosts: automation_ubuntu_vm
+  become: yes
+
+  tasks:
+    - name: Update the apt cache
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+
+    - name: Restart Selenium Chrome Container
+      shell: docker restart selenium-chrome

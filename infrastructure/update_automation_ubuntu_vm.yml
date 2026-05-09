@@ -1,5 +1,5 @@
 ---
-- name: Update VM and Refresh Selenium
+- name: Update VM, Refresh Selenium, and Backup Data
   hosts: automation_ubuntu_vm
   become: yes
 
@@ -11,6 +11,21 @@
     - name: Upgrade all packages
       apt:
         upgrade: dist
+
+    - name: Ensure backup directory exists
+      file:
+        path: /home/maniejv/backups
+        state: directory
+        owner: maniejv
+
+    - name: Compress and Backup Docker Volumes
+      archive:
+        path:
+          - /var/lib/docker/volumes/jenkins_jenkins_home/_data
+          - /var/lib/docker/volumes/grafana_grafana_data/_data
+          - /var/lib/docker/volumes/prometheus_prometheus_data/_data
+        dest: "/home/maniejv/backups/lab_backup_{{ ansible_date_time.date }}.tar.gz"
+        format: gz
 
     - name: Restart Selenium Chrome Container
       shell: docker restart selenium-chrome

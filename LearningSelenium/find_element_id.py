@@ -2,18 +2,20 @@ import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-
+import os
 
 class FindElementId():
     def locate_by_id(self):
         chrome_options = Options()
 
-        chrome_options.add_argument("--headless")
-
-        driver = webdriver.Remote(
-            command_executor='http://selenium-chrome:4444/wd/hub',
-            options=chrome_options
-        )
+        if os.getenv('JENKINS_URL'):
+            print("🚀 Detected Jenkins - Connecting to Remote Grid...")
+            chrome_options.add_argument("--headless")
+            grid_url = os.getenv('SELENIUM_GRID_URL', 'http://selenium-chrome:4444')
+            driver = webdriver.Remote(command_executor=grid_url, options=chrome_options)
+        else:
+            print("💻 Detected MacBook - Running Locally...")
+            driver = webdriver.Chrome(options=chrome_options)
 
         time.sleep(5)
 
